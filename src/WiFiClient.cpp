@@ -35,10 +35,15 @@ extern "C" {
 
 uint16_t WiFiClient::_srcport = 1024;
 
-WiFiClient::WiFiClient() : _sock(NO_SOCKET_AVAIL), _retrySend(true) {
+WiFiClient::WiFiClient() : _sock(NO_SOCKET_AVAIL), _retrySend(true), connectTimeout(10000) {
 }
 
-WiFiClient::WiFiClient(uint8_t sock) : _sock(sock), _retrySend(true) {
+WiFiClient::WiFiClient(uint8_t sock) : _sock(sock), _retrySend(true), connectTimeout(10000) {
+}
+
+void WiFiClient::setServerConnectTimeout(uint16_t timeout)
+{
+	this->connectTimeout = timeout;
 }
 
 int WiFiClient::connect(const char* host, uint16_t port) {
@@ -60,11 +65,10 @@ int WiFiClient::connect(IPAddress ip, uint16_t port) {
     if (_sock != NO_SOCKET_AVAIL)
     {
     	ServerDrv::startClient(uint32_t(ip), port, _sock);
-
     	unsigned long start = millis();
 
     	// wait 4 second for the connection to close
-    	while (!connected() && millis() - start < 10000)
+    	while (!connected() && millis() - start < this->connectTimeout)
     		delay(1);
 
     	if (!connected())
@@ -93,7 +97,7 @@ int WiFiClient::connectSSL(IPAddress ip, uint16_t port)
       unsigned long start = millis();
 
       // wait 4 second for the connection to close
-      while (!connected() && millis() - start < 10000)
+      while (!connected() && millis() - start < this->connectTimeout)
         delay(1);
 
       if (!connected())
@@ -122,7 +126,7 @@ int WiFiClient::connectSSL(const char *host, uint16_t port)
       unsigned long start = millis();
 
       // wait 4 second for the connection to close
-      while (!connected() && millis() - start < 10000)
+      while (!connected() && millis() - start < this->connectTimeout)
         delay(1);
 
       if (!connected())
@@ -151,7 +155,7 @@ int WiFiClient::connectBearSSL(IPAddress ip, uint16_t port)
       unsigned long start = millis();
 
       // wait 4 second for the connection to close
-      while (!connected() && millis() - start < 10000)
+      while (!connected() && millis() - start < this->connectTimeout)
         delay(1);
 
       if (!connected())
@@ -180,7 +184,7 @@ int WiFiClient::connectBearSSL(const char *host, uint16_t port)
       unsigned long start = millis();
 
       // wait 4 second for the connection to close
-      while (!connected() && millis() - start < 10000)
+      while (!connected() && millis() - start < this->connectTimeout)
         delay(1);
 
       if (!connected())

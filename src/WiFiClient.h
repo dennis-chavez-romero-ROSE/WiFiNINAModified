@@ -49,6 +49,7 @@ public:
   virtual void flush();
   virtual void stop();
   virtual uint8_t connected();
+  virtual void setServerConnectTimeout(uint16_t timeout);
   virtual operator bool();
 
   virtual IPAddress remoteIP();
@@ -63,6 +64,7 @@ private:
   static uint16_t _srcport;
   uint8_t _sock;   //not used
   uint16_t  _socket;
+  uint16_t  connectTimeout;
   bool _retrySend;
 };
 
